@@ -1,14 +1,18 @@
 package com.hb.myrecipeapp;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.hb.myrecipeapp.Adapters.IngredientsAdapter;
 import com.hb.myrecipeapp.Listener.RecipeDetailsListener;
+import com.hb.myrecipeapp.Models.Ingredient;
 import com.hb.myrecipeapp.Models.RecipeDatailsResponse;
 import com.squareup.picasso.Picasso;
 
@@ -17,9 +21,10 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     int id;
     TextView textView_meal_name, textView_meal_source, textView_meal_summary;
     ImageView imageView_meal_image;
-    RecyclerView recyclerView_meal_ingredients;
+    RecyclerView recyclerView_meal_ingredients, recycler_meal_similar;
     RequestManager manager;
     ProgressDialog dialog;
+    IngredientsAdapter ingredientsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +37,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         manager = new RequestManager(this);
         manager.getRecipeDetails(recipeDatailsListener, id);
         dialog = new ProgressDialog(this);
-        dialog.setTitle("디테일 로딩중.. ");
+        dialog.setTitle("레시피 불러오는 중 .. ");
         dialog.show();
 
     }
@@ -43,7 +48,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         textView_meal_summary = findViewById(R.id.textView_meal_summary);
         imageView_meal_image = findViewById(R.id.imageView_meal_image);
         recyclerView_meal_ingredients = findViewById(R.id.recycler_meal_ingredients);
-
+        recycler_meal_similar = findViewById(R.id.recycler_meal_similar);
     }
 
     private final RecipeDetailsListener recipeDatailsListener = new RecipeDetailsListener() {
@@ -55,12 +60,16 @@ public class RecipeDetailsActivity extends AppCompatActivity {
             textView_meal_summary.setText(response.summary);
             Picasso.get().load(response.image).into(imageView_meal_image);
 
-
+            recyclerView_meal_ingredients.setHasFixedSize(true);
+            recyclerView_meal_ingredients.setLayoutManager(new LinearLayoutManager(RecipeDetailsActivity.this, LinearLayoutManager.HORIZONTAL, false));
+            ingredientsAdapter = new IngredientsAdapter(RecipeDetailsActivity.this, response.extendedIngredients);
+            recyclerView_meal_ingredients.setAdapter(ingredientsAdapter);
+            recycler_meal_similar.setAdapter((ingredientsAdapter));
         }
 
         @Override
         public void didError(String message) {
-
+            Toast.makeText(RecipeDetailsActivity.this, message, Toast.LENGTH_SHORT).show();
         }
     };
 

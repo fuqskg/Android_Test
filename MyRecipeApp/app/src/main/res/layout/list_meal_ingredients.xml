@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardBackgroundColor="@color/white"
@@ -15,6 +15,10 @@
         <TextView
             android:id="@+id/textView_ingredients_quantity"
             android:text="1 pc"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
             android:textColor="@color/black"
             android:textAlignment="center"
             android:textSize="16sp"

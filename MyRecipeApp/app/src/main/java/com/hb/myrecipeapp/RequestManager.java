@@ -2,6 +2,7 @@ package com.hb.myrecipeapp;
 
 import android.content.Context;
 
+import com.hb.myrecipeapp.Adapters.SimilarRecipeResponse;
 import com.hb.myrecipeapp.Listener.RandomRecipeResponseListener;
 import com.hb.myrecipeapp.Listener.RecipeDetailsListener;
 import com.hb.myrecipeapp.Models.RandomRecipeApiResponse;
@@ -84,6 +85,16 @@ public class RequestManager {
                 @Path("id") int id,
                 @Query("apiKey") String apiKey
         );
+    }
+
+    private interface CallSimilarRecipes{
+        @GET("recipes/{id}/similar")
+        Call<List<SimilarRecipeResponse>> callSimilarRecipe(
+                @Query("id") int id,
+                @Query("number") String number,
+                @Query("apiKey") String apiKey
+                );
+
     }
 
 }
