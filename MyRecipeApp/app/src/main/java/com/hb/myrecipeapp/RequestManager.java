@@ -5,6 +5,7 @@ import android.content.Context;
 import com.hb.myrecipeapp.Adapters.SimilarRecipeResponse;
 import com.hb.myrecipeapp.Listener.RandomRecipeResponseListener;
 import com.hb.myrecipeapp.Listener.RecipeDetailsListener;
+import com.hb.myrecipeapp.Listener.SimilarRecipesListener;
 import com.hb.myrecipeapp.Models.RandomRecipeApiResponse;
 import com.hb.myrecipeapp.Models.RecipeDatailsResponse;
 
@@ -66,6 +67,26 @@ public class RequestManager {
 
             @Override
             public void onFailure(Call<RecipeDatailsResponse> call, Throwable t) {
+                listener.didError(t.getMessage());
+            }
+        });
+    }
+
+    public void getSimilarRecipes(SimilarRecipesListener listener, int id){
+        CallSimilarRecipes callSimilarRecipes = retrofit.create(CallSimilarRecipes.class);
+        Call<List<SimilarRecipeResponse>> call = callSimilarRecipes.callSimilarRecipe(id, "4", context.getString(R.string.api_key));
+        call.enqueue(new Callback<List<SimilarRecipeResponse>>() {
+            @Override
+            public void onResponse(Call<List<SimilarRecipeResponse>> call, Response<List<SimilarRecipeResponse>> response) {
+                if(!response.isSuccessful()){
+                    listener.didError(response.message());
+                    return;
+                }
+                listener.didFetch(response.body(), response.message());
+            }
+
+            @Override
+            public void onFailure(Call<List<SimilarRecipeResponse>> call, Throwable t) {
                 listener.didError(t.getMessage());
             }
         });

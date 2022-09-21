@@ -11,10 +11,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hb.myrecipeapp.Adapters.IngredientsAdapter;
+import com.hb.myrecipeapp.Adapters.SimilarRecipeResponse;
 import com.hb.myrecipeapp.Listener.RecipeDetailsListener;
+import com.hb.myrecipeapp.Listener.SimilarRecipesListener;
 import com.hb.myrecipeapp.Models.Ingredient;
 import com.hb.myrecipeapp.Models.RecipeDatailsResponse;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 public class RecipeDetailsActivity extends AppCompatActivity {
 
@@ -36,6 +40,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         id = Integer.parseInt(getIntent().getStringExtra("id"));
         manager = new RequestManager(this);
         manager.getRecipeDetails(recipeDatailsListener, id);
+        manager.getSimilarRecipes(similarRecipesListener, id);
         dialog = new ProgressDialog(this);
         dialog.setTitle("레시피 불러오는 중 .. ");
         dialog.show();
@@ -49,6 +54,8 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         imageView_meal_image = findViewById(R.id.imageView_meal_image);
         recyclerView_meal_ingredients = findViewById(R.id.recycler_meal_ingredients);
         recycler_meal_similar = findViewById(R.id.recycler_meal_similar);
+
+
     }
 
     private final RecipeDetailsListener recipeDatailsListener = new RecipeDetailsListener() {
@@ -73,4 +80,15 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         }
     };
 
+    private final SimilarRecipesListener similarRecipesListener = new SimilarRecipesListener() {
+        @Override
+        public void didFetch(List<SimilarRecipeResponse> responses, String message) {
+
+        }
+
+        @Override
+        public void didError(String message) {
+
+        }
+    };
 }
