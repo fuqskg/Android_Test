@@ -5,16 +5,20 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hb.myrecipeapp.Adapters.IngredientsAdapter;
+import com.hb.myrecipeapp.Adapters.SimilarRecipeAdapter;
 import com.hb.myrecipeapp.Adapters.SimilarRecipeResponse;
+import com.hb.myrecipeapp.Listener.RecipeClickListener;
 import com.hb.myrecipeapp.Listener.RecipeDetailsListener;
 import com.hb.myrecipeapp.Listener.SimilarRecipesListener;
 import com.hb.myrecipeapp.Models.Ingredient;
+import com.hb.myrecipeapp.Models.Recipe;
 import com.hb.myrecipeapp.Models.RecipeDatailsResponse;
 import com.squareup.picasso.Picasso;
 
@@ -29,6 +33,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     RequestManager manager;
     ProgressDialog dialog;
     IngredientsAdapter ingredientsAdapter;
+    SimilarRecipeAdapter similarRecipeAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,12 +88,23 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     private final SimilarRecipesListener similarRecipesListener = new SimilarRecipesListener() {
         @Override
         public void didFetch(List<SimilarRecipeResponse> responses, String message) {
-
+            recycler_meal_similar.setHasFixedSize(true);
+            recycler_meal_similar.setLayoutManager(new LinearLayoutManager(RecipeDetailsActivity.this, LinearLayoutManager.HORIZONTAL, false));
+            similarRecipeAdapter = new SimilarRecipeAdapter(RecipeDetailsActivity.this, responses, recipeClickListener);
+            recycler_meal_similar.setAdapter(similarRecipeAdapter);
         }
 
         @Override
         public void didError(String message) {
+            Toast.makeText(RecipeDetailsActivity.this, message, Toast.LENGTH_SHORT).show();
+        }
+    };
 
+    private final RecipeClickListener recipeClickListener = new RecipeClickListener() {
+        @Override
+        public void onRecipeClicked(String id){
+            startActivity(new Intent(RecipeDetailsActivity.this, RecipeDetailsActivity.class)
+                    .putExtra("id", id));
         }
     };
 }
